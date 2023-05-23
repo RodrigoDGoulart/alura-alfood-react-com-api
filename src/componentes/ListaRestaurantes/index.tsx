@@ -14,9 +14,11 @@ const ListaRestaurantes = () => {
     // obter restaurantes
     axios.get<IPaginacao<IRestaurante>>('http://192.168.15.57:8000/api/v1/restaurantes/')
       .then(response => {
-        console.log(response);
         setRestaurantes(response.data.results);
         setProximaPagina(response.data.next);
+      })
+      .catch(erro => {
+        console.log(erro);
       });
   }, []);
 

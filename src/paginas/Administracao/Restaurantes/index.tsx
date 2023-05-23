@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import IRestaurante from "../../interfaces/IRestaurante"
+import IRestaurante from "../../../interfaces/IRestaurante"
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell } from "@mui/material";
 import axios from "axios";
 

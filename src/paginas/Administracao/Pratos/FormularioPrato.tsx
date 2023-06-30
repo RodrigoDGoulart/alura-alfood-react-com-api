@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 import http from "../../../http";
 import ITag from "../../../interfaces/ITag";
 import IRestaurante from "../../../interfaces/IRestaurante";
+import { useParams } from "react-router-dom";
+import IPrato from "../../../interfaces/IPrato";
 
 export default function FormularioPrato() {
+  const {id} = useParams();
+
   const [nomePrato, setNomePrato] = useState('');
   const [descricao, setDescricao] = useState('');
   const [tag, setTag] = useState('');
@@ -25,18 +29,22 @@ export default function FormularioPrato() {
     imagem && formData.append('imagem', imagem);
 
     http.request({
-      url: 'pratos/',
-      method: 'POST',
+      url: id ? `pratos/${id}/` : 'pratos/',
+      method: id ? 'PUT' : 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
       data: formData
     }).then(() => {
-      setNomePrato('');
-      setDescricao('');
-      setTag('');
-      setRestaurante('');
-      alert('Prato cadastrado com sucesso!');
+      if (!id) {
+        setNomePrato('');
+        setDescricao('');
+        setTag('');
+        setRestaurante('');
+        alert('Prato cadastrado com sucesso!');
+      } else {
+        alert('Prato atualizado com sucesso!');
+      }
     }).catch(erro => console.log(erro));
   }
 
@@ -49,7 +57,16 @@ export default function FormularioPrato() {
     .then(resposta => {
       setRestaurantes(resposta.data);
     });
-  }, []);
+    if (id) {
+      http.get<IPrato>(`/pratos/${id}/`)
+      .then(async resposta => {
+        setNomePrato(resposta.data.nome);
+        setDescricao(resposta.data.descricao);
+        setTag(resposta.data.tag);
+        setRestaurante(`${resposta.data.restaurante}`);
+      });
+    }
+  }, [id]);
   return (
     <>
       <Typography
